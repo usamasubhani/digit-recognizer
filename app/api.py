@@ -20,17 +20,22 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return "Hello"
+
+
 @app.route('/api/predict', methods=["POST"])
 def Predict():
     data = request.get_json()
-    with open("image.png", "wb") as output:
-        output.write(base64.decodebytes(str.encode(data["image"])))
-        # output.write(data["image"].decode('base64'))
+    img = base64.b64decode(data["image"])
+    with open("image.jpg", "wb") as output:
+        output.write(img)
+     #   output.write(base64.decodebytes(str.encode(data["image"])))
+        # output.write( base64.decodebytes(data["image"].encode()) )
+        #output.write(data["image"].decode('base64'))
     # json_string = json.loads(data)
     # image_json[""]
     # print(request.get_json())
     
-    return type(str.encode(data["image"]))
+    return str.encode(data["image"])
     
 
 if __name__ == '__main__':
