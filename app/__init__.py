@@ -1,5 +1,5 @@
 # from flask import render_template, request, url_for
-from flask import Flask, request
+from flask import Flask, request, render_template
 #from scipy.misc import imsave, imread, imresize
 #from app import app
 #import numpy as np
@@ -19,7 +19,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "Hello"
+    return render_template('sketchpad.html')
 
 
 @app.route('/api/predict', methods=["POST"])
