@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <head>
 	<script
 	src="https://code.jquery.com/jquery-3.5.1.min.js"
@@ -14,14 +16,33 @@
 </head>
 
 <body>
-	<canvas class="sketchpad" id="sketchpad"></canvas>	
+	<!-- <canvas class="sketchpad" id="sketchpad"></canvas>	 -->
+	<canvas id="canvas" width="280" height="280" style="border:8px solid; float: left; margin: 70px; margin-top:160px;  border-radius: 5px; cursor: crosshair;"></canvas>
+	<button class="predictBtn">Predict</button>
+	<p id="result">result</p>
 </body>
 
 <script src="{{ url_for('static', filename='sketchpad.js') }}"></script>
 <script>
-	var sketchpad = new Sketchpad({
-		  element: '#sketchpad',
-		  width: 400,
-		  height: 400
-	});
+	// var sketchpad = new Sketchpad({
+	// 	  element: '#sketchpad',
+	// 	  width: 400,
+	// 	  height: 400
+	// });
+	$(".predictBtn").click(function(){
+	   			// var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	   			var canvasObj = document.getElementById("canvas");
+				   var img = canvasObj.toDataURL();				   
+	   			$.ajax({
+	   				type: "POST",
+					//    url: $SCRIPT_ROOT + "/predict",
+					   url: "/predict",
+	   				data: img,
+	   				success: function(data){
+						console.log("HMMM")
+	   					$('#result').text(' Predicted Output: '+data);
+	   				}
+	   			});
+	   		});
 </script>
+</html>

@@ -1,41 +1,53 @@
-# from flask import render_template, request, url_for
+
 from flask import Flask, request, render_template
-#from scipy.misc import imsave, imread, imresize
-#from app import app
-#import numpy as np
-#from app.funcs import Data, Train
-#from sklearn.metrics.pairwise import cosine_similarity
-#import tensorflow as tf
-#from tensorflow import get_default_graph
-#from tensorflow.keras.models import load_model
-#from tensorflow.keras import backend as K
-#import time
+import numpy as np
+from tensorflow.keras.models import load_model, model_from_json
+import matplotlib.image
+from skimage.transform import resize
+# from scipy.misc import imread
 
 import base64
 import json
-
+from base64 import b64decode
+import re
 
 app = Flask(__name__)
+json_file = open('../model.json', 'r')
+model_json = json_file.read()
+json_file.close()
+model = model_from_json(model_json)
+model.load_weights('../Model_mnist.h5')
+model.compile(loss='sparse_categorical_crossentropy')
+
 
 @app.route('/')
 def index():
     return render_template('sketchpad.html')
 
 
-@app.route('/api/predict', methods=["POST"])
+@app.route('/predict', methods=["POST"])
 def Predict():
-    data = request.get_json()
-    img = base64.b64decode(data["image"])
-    with open("image.jpg", "wb") as output:
-        output.write(img)
-     #   output.write(base64.decodebytes(str.encode(data["image"])))
-        # output.write( base64.decodebytes(data["image"].encode()) )
-        #output.write(data["image"].decode('base64'))
-    # json_string = json.loads(data)
-    # image_json[""]
-    # print(request.get_json())
-    
-    return str.encode(data["image"])
+    img_data = request.get_data().decode('utf-8')
+    # Separate the metadata from the image data
+    head, data = img_data.split(',', 1)
+    # Decode the image data
+    plain_data = base64.b64decode(data)
+
+    # Write the image to a file
+    with open('image.png', 'wb') as f:
+        f.write(plain_data)
+
+    img = np.array(matplotlib.image.imread('image.png'), np.int)
+    # img = matplotlib.image.imread('image.png')
+    # img = imread('image.png', mode='L')
+    print(img)  
+    img = np.invert(img)
+    with open('image_inv.png', 'wb') as f:
+        f.write(img)
+    res = resize(img, (1, 28, 28, 1))
+    prediction = model.predict_classes(res)
+    print(np.array2string(prediction))
+    return np.array2string(prediction[0])
     
 
 if __name__ == '__main__':
