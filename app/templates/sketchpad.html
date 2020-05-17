@@ -30,19 +30,16 @@
 	// 	  height: 400
 	// });
 	$(".predictBtn").click(function(){
-	   			// var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-	   			var canvasObj = document.getElementById("canvas");
-				   var img = canvasObj.toDataURL();				   
-	   			$.ajax({
-	   				type: "POST",
-					//    url: $SCRIPT_ROOT + "/predict",
-					   url: "/predict",
-	   				data: img,
-	   				success: function(data){
-						console.log("HMMM")
-	   					$('#result').text(' Predicted Output: '+data);
-	   				}
-	   			});
-	   		});
+		var canvasObj = document.getElementById("canvas");
+		var img = canvasObj.toDataURL("image/png");
+		$.ajax({
+			type: "POST",
+			url: "/predict",
+			data: img,
+			success: function(data){
+				$('#result').text(' Predicted Output: '+data);
+			}
+		});
+	});
 </script>
 </html>

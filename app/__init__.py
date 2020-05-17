@@ -10,14 +10,15 @@ import base64
 import json
 from base64 import b64decode
 import re
+import cv2
 
 app = Flask(__name__)
-json_file = open('../model.json', 'r')
+json_file = open('../model_v0.2.json', 'r')
 model_json = json_file.read()
 json_file.close()
 model = model_from_json(model_json)
-model.load_weights('../Model_mnist.h5')
-model.compile(loss='sparse_categorical_crossentropy')
+model.load_weights('../Model_mnist_v0.2.h5')
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 
 @app.route('/')
@@ -30,23 +31,15 @@ def Predict():
     img_data = request.get_data().decode('utf-8')
     # Separate the metadata from the image data
     head, data = img_data.split(',', 1)
-    # Decode the image data
-    plain_data = base64.b64decode(data)
-
     # Write the image to a file
     with open('image.png', 'wb') as f:
-        f.write(plain_data)
+        f.write(base64.b64decode(data))
 
-    img = np.array(matplotlib.image.imread('image.png'), np.int)
-    # img = matplotlib.image.imread('image.png')
-    # img = imread('image.png', mode='L')
-    print(img)  
-    img = np.invert(img)
-    with open('image_inv.png', 'wb') as f:
-        f.write(img)
-    res = resize(img, (1, 28, 28, 1))
-    prediction = model.predict_classes(res)
-    print(np.array2string(prediction))
+    img = cv2.imread('image.png')[:,:,0]
+    img = cv2.resize(img, (28,28), interpolation = cv2.INTER_AREA)
+    img = np.invert(np.array([img]))
+    print(img.shape)
+    prediction = model.predict_classes(img)
     return np.array2string(prediction[0])
     
 
