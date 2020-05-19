@@ -13,21 +13,29 @@
 			height: 400px;
 		}
 	</style>
+	<link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
-	<!-- <canvas class="sketchpad" id="sketchpad"></canvas>	 -->
-	<canvas id="canvas" width="280" height="280" style="border:8px solid; float: left; margin: 70px; margin-top:160px;  border-radius: 5px; cursor: crosshair;"></canvas>
-	<button class="predictBtn">Predict</button>
-	<p id="result">result</p>
+<body class=" bg-gray-200">
+	<div class="flex flex-col">
+		<div class="text-gray-700 text-center px-4 py-2 m-2 text-2xl">Digit Recognizer</div>
+		<div class="text-gray-700 text-center px-4 py-2 m-2"><canvas id="canvas" class="mx-auto w-280 h-280 border-1 border-gray-400 shadow-xl" style="cursor: crosshair;"></canvas></div>
+		<div class="text-gray-700 text-center px-4 py-2 m-2">
+			<button class="predictBtn bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded shadow-lg">Predict</button>
+			<button id="clearButton" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded shadow-lg">Clear</button>
+			<p id="result" class="font-bold p-4">Prediction: </p>
+		</div>
+		
+	</div>
 </body>
 
 <script src="{{ url_for('static', filename='sketchpad.js') }}"></script>
 <script>
 	// var sketchpad = new Sketchpad({
-	// 	  element: '#sketchpad',
-	// 	  width: 400,
-	// 	  height: 400
+	// 	  element: '#canvas',
+	// 	  width: 280,
+	// 	  height: 280,
+	// 	  pensize: 10
 	// });
 	$(".predictBtn").click(function(){
 		var canvasObj = document.getElementById("canvas");
@@ -37,7 +45,7 @@
 			url: "/predict",
 			data: img,
 			success: function(data){
-				$('#result').text(' Predicted Output: '+data);
+				$('#result').text(' Prediction: '+data);
 			}
 		});
 	});

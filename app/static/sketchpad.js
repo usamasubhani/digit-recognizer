@@ -364,12 +364,11 @@
 		var clearButton = $( "#clearButton" );
 		
 		clearButton.on( "click", function()
-		{
-			
-				context.clearRect( 0, 0, 280, 280 );
-				context.fillStyle="white";
-				context.fillRect(0,0,canvas.width,canvas.height);
-			
+		{		
+			context.clearRect( 0, 0, 280, 280 );
+			context.fillStyle="white";
+			context.fillRect(0,0,canvas.width,canvas.height);
+			$('#result').text(' Prediction: ');
 		});
 
 		/* COLOR SELECTOR */
