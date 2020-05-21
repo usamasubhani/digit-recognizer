@@ -1,4 +1,3 @@
-
 from flask import Flask, request, render_template
 import numpy as np
 from tensorflow.keras.models import load_model, model_from_json
@@ -10,11 +9,11 @@ import cv2
 
 app = Flask(__name__)
 # Load Model
-json_file = open('../model_v0.2.json', 'r')
+json_file = open('model_v0.2.json', 'r')
 model_json = json_file.read()
 json_file.close()
 model = model_from_json(model_json)
-model.load_weights('../Model_mnist_v0.2.h5')
+model.load_weights('Model_mnist_v0.2.h5')
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 
@@ -39,6 +38,6 @@ def Predict():
     return np.array2string(prediction[0])
     
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+#if __name__ == '__main__':
+#    app.run()
 
